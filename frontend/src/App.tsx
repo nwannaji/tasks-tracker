@@ -5,6 +5,8 @@ import Header from './components/Header.tsx';
 import Login from './components/Login.tsx';
 import Register from './components/Register.tsx';
 import Dashboard from './components/Dashboard.tsx';
+import ForgotPassword from './components/ForgotPassword.tsx';
+import ResetPassword from './components/ResetPassword.tsx';
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route
               path="/dashboard"
               element={

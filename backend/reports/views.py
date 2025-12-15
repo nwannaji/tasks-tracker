@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import TaskReport
 from .serializers import TaskReportSerializer
+from django.db.models import Q
 
 class TaskReportViewSet(viewsets.ModelViewSet):
     queryset = TaskReport.objects.all()
@@ -47,5 +48,40 @@ class TaskReportViewSet(viewsets.ModelViewSet):
             )
         
         reports = TaskReport.objects.filter(task_id=task_id)
+        serializer = self.get_serializer(reports, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def employee_reports(self, request):
+        """Get reports for employees - managers only"""
+        if not request.user.is_manager:
+            return Response(
+                {'error': 'Only managers can access employee reports'}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        employee_id = request.query_params.get('employee_id')
+        
+        if employee_id:
+            # Get reports for specific employee
+            reports = TaskReport.objects.filter(reported_by_id=employee_id)
+        else:
+            # Get all reports for all employees
+            reports = TaskReport.objects.all()
+        
+        serializer = self.get_serializer(reports, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def manager_dashboard(self, request):
+        """Get all reports for manager dashboard view"""
+        if not request.user.is_manager:
+            return Response(
+                {'error': 'Only managers can access dashboard reports'}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        # Get all reports with related task and user info
+        reports = TaskReport.objects.select_related('task', 'reported_by').all()
         serializer = self.get_serializer(reports, many=True)
         return Response(serializer.data)

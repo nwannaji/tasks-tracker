@@ -1,17 +1,10 @@
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext.tsx';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+import { useLocation } from 'react-router-dom';
 
 const Header: React.FC = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
   const location = useLocation();
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
 
   // Don't show header on login/register pages
   if (location.pathname === '/login' || location.pathname === '/register') {
@@ -40,14 +33,6 @@ const Header: React.FC = () => {
               </div>
             )}
           </div>
-          
-          <button
-            onClick={handleLogout}
-            className="flex items-center px-2 sm:px-3 py-2 border border-red-500/30 shadow-sm text-xs sm:text-sm leading-4 font-medium rounded-md text-red-400 bg-red-500/10 hover:bg-red-500/20 hover:text-red-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-red-500 transition-all duration-200"
-          >
-            <ArrowRightOnRectangleIcon className="h-4 w-4 sm:mr-2 text-red-400" />
-            <span className="hidden sm:inline">Logout</span>
-          </button>
         </div>
       </div>
     </header>

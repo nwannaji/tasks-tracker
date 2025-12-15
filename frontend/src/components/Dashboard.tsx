@@ -11,6 +11,7 @@ import {
 import TaskForm from "./TaskForm.tsx";
 import TaskTable from "./TaskTable.tsx";
 import EditTaskForm from "./EditTaskForm.tsx";
+import EmployeeReports from "./EmployeeReports.tsx";
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -19,6 +20,7 @@ const Dashboard: React.FC = () => {
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [selectedStatus, setSelectedStatus] = useState("all");
+  const [activeTab, setActiveTab] = useState<"tasks" | "reports">("tasks");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -69,6 +71,12 @@ const Dashboard: React.FC = () => {
     setEditingTask(task);
   };
 
+  const handleTaskSelect = (task: Task) => {
+    setActiveTab("tasks");
+    setSelectedStatus("all");
+    setEditingTask(task);
+  };
+
   const statusOptions = useMemo(() => [
     { value: "all", label: "All Tasks" },
     { value: "created", label: "Created" },
@@ -114,32 +122,60 @@ const Dashboard: React.FC = () => {
     <div className="pt-16 sm:pt-16">
       <div className="py-4 sm:py-6 bg-linear-to-br from-slate-50 to-slate-100 min-h-screen">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 space-y-4 sm:space-y-0">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
-              Task Management System
-            </h1>
-            <p className="mt-1 text-xs sm:text-sm text-gray-500">
-              Manage and track your daily tasks efficiently
-            </p>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 space-y-4 sm:space-y-0">
+            <div>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+                Task Management System
+              </h1>
+              <p className="mt-1 text-xs sm:text-sm text-gray-500">
+                Manage and track your daily tasks efficiently
+              </p>
+            </div>
+            <div className="w-full sm:w-auto">
+              {user?.is_manager && (
+                <button
+                  onClick={() => setShowTaskForm(true)}
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+                >
+                  <PlusIcon className="h-5 w-5 mr-2" />
+                  Create Task
+                </button>
+              )}
+              {!user?.is_manager && (
+                <div className="text-xs sm:text-sm text-gray-500 text-center sm:text-right">
+                  You can only report on tasks assigned to you
+                </div>
+              )}
+            </div>
           </div>
-          <div className="w-full sm:w-auto">
-            {user?.is_manager && (
-              <button
-                onClick={() => setShowTaskForm(true)}
-                className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
-              >
-                <PlusIcon className="h-5 w-5 mr-2" />
-                Create Task
-              </button>
-            )}
-            {!user?.is_manager && (
-              <div className="text-xs sm:text-sm text-gray-500 text-center sm:text-right">
-                You can only report on tasks assigned to you
-              </div>
-            )}
-          </div>
-        </div>
+
+          {/* Tab Navigation - Only for Managers */}
+          {user?.is_manager && (
+            <div className="border-b border-gray-200 mb-6">
+              <nav className="-mb-px flex space-x-8">
+                <button
+                  onClick={() => setActiveTab("tasks")}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                    activeTab === "tasks"
+                      ? "border-indigo-500 text-indigo-600"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  }`}
+                >
+                  Tasks Management
+                </button>
+                <button
+                  onClick={() => setActiveTab("reports")}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                    activeTab === "reports"
+                      ? "border-indigo-500 text-indigo-600"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  }`}
+                >
+                  Employee Reports
+                </button>
+              </nav>
+            </div>
+          )}
         {/* Stats Cards */}
         {stats && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
@@ -242,38 +278,46 @@ const Dashboard: React.FC = () => {
           </div>
         )}
 
-        {/* Status Filter */}
-        <div className="mb-4 sm:mb-6">
-          <div className="flex flex-wrap gap-2">
-            {statusOptions.map((option) => (
-              <button
-                key={option.value}
-                onClick={() => setSelectedStatus(option.value)}
-                disabled={isRefreshing}
-                className={`px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-                  selectedStatus === option.value
-                    ? "bg-indigo-600 text-white shadow-sm"
-                    : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300"
-                }`}
-              >
-                {option.label}
-              </button>
-            ))}
-            {isRefreshing && (
-              <div className="flex items-center px-3 py-2 text-xs text-gray-500">
-                <div className="animate-spin rounded-full h-3 w-3 border-b border-gray-400 mr-2"></div>
-                Refreshing...
-              </div>
-            )}
+        {/* Status Filter - Only show on Tasks tab */}
+        {activeTab === "tasks" && (
+          <div className="mb-4 sm:mb-6">
+            <div className="flex flex-wrap gap-2">
+              {statusOptions.map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => setSelectedStatus(option.value)}
+                  disabled={isRefreshing}
+                  className={`px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
+                    selectedStatus === option.value
+                      ? "bg-indigo-600 text-white shadow-sm"
+                      : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+              {isRefreshing && (
+                <div className="flex items-center px-3 py-2 text-xs text-gray-500">
+                  <div className="animate-spin rounded-full h-3 w-3 border-b border-gray-400 mr-2"></div>
+                  Refreshing...
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Tasks Table */}
-        <TaskTable
-          tasks={tasks}
-          onTaskUpdated={handleTaskUpdated}
-          onTaskEdit={handleEditTask}
-        />
+        {/* Content based on active tab */}
+        {activeTab === "tasks" ? (
+          /* Tasks Table */
+          <TaskTable
+            tasks={tasks}
+            onTaskUpdated={handleTaskUpdated}
+            onTaskEdit={handleEditTask}
+          />
+        ) : (
+          /* Employee Reports */
+          <EmployeeReports onTaskSelect={handleTaskSelect} />
+        )}
 
         {/* Task Form Modal */}
         {showTaskForm && (

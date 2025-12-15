@@ -46,7 +46,7 @@ export interface User {
   email: string;
   first_name: string;
   last_name: string;
-  role: 'manager' | 'employee';
+  role: 'GM' | 'employee';
   is_manager: boolean;
   created_at: string;
 }
@@ -62,7 +62,7 @@ export interface RegisterData {
   password: string;
   first_name: string;
   last_name: string;
-  role?: 'manager' | 'employee';
+  role?: 'GM' | 'employee';
 }
 
 export interface AuthResponse {

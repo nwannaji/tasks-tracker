@@ -4,8 +4,10 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
-from .models import User
-from .serializers import UserRegistrationSerializer, UserSerializer
+from django.core.mail import send_mail
+from django.conf import settings
+from .models import User, PasswordResetToken
+from .serializers import UserRegistrationSerializer, UserSerializer, PasswordResetRequestSerializer, PasswordResetConfirmSerializer
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -57,3 +59,87 @@ def employees_list(request):
     employees = User.objects.filter(role='employee')
     serializer = UserSerializer(employees, many=True)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def password_reset_request(request):
+    """Request password reset token via email"""
+    serializer = PasswordResetRequestSerializer(data=request.data)
+    if serializer.is_valid():
+        email = serializer.validated_data['email']
+        user = User.objects.get(email=email)
+        
+        # Invalidate any existing tokens for this user
+        PasswordResetToken.objects.filter(user=user, is_used=False).update(is_used=True)
+        
+        # Create new token
+        reset_token = PasswordResetToken.objects.create(user=user)
+        
+        # Send email
+        reset_url = f"{settings.FRONTEND_URL}/reset-password?token={reset_token.token}"
+        subject = 'Password Reset Request - Tasks Tracker'
+        message = f'''
+        Hello {user.first_name or user.username},
+        
+        You requested a password reset for your Tasks Tracker account.
+        
+        Click the link below to reset your password:
+        {reset_url}
+        
+        This link will expire in 1 hour.
+        
+        If you did not request this password reset, please ignore this email.
+        
+        Thank you,
+        Tasks Tracker Team
+        '''
+        
+        try:
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                [email],
+                fail_silently=False,
+            )
+            return Response({
+                'message': 'Password reset instructions have been sent to your email.'
+            })
+        except Exception as e:
+            return Response(
+                {'error': 'Failed to send email. Please try again later.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def password_reset_confirm(request):
+    """Confirm password reset with token and new password"""
+    serializer = PasswordResetConfirmSerializer(data=request.data)
+    if serializer.is_valid():
+        token = serializer.validated_data['token']
+        new_password = serializer.validated_data['new_password']
+        
+        reset_token = PasswordResetToken.objects.get(token=token)
+        user = reset_token.user
+        
+        # Set new password
+        user.set_password(new_password)
+        user.save()
+        
+        # Mark token as used
+        reset_token.is_used = True
+        reset_token.save()
+        
+        # Invalidate all other tokens for this user
+        PasswordResetToken.objects.filter(user=user, is_used=False).update(is_used=True)
+        
+        return Response({
+            'message': 'Password has been reset successfully.'
+        })
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -5,7 +5,7 @@ import { authAPI } from '../api/auth';
 interface AuthContextType {
   user: User | null;
   login: (username: string, password: string) => Promise<void>;
-  register: (data: { username: string; email: string; password: string; first_name: string; last_name: string; role?: 'manager' | 'employee' }) => Promise<void>;
+  register: (data: { username: string; email: string; password: string; first_name: string; last_name: string; role?: 'GM' | 'employee' }) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
   isAuthenticated: boolean;
@@ -51,7 +51,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser(response.user);
   };
 
-  const register = async (data: { username: string; email: string; password: string; first_name: string; last_name: string; role?: 'manager' | 'employee' }) => {
+  const register = async (data: { username: string; email: string; password: string; first_name: string; last_name: string; role?: 'GM' | 'employee' }) => {
     const response: AuthResponse = await authAPI.register(data);
     localStorage.setItem('access_token', response.access);
     localStorage.setItem('refresh_token', response.refresh);

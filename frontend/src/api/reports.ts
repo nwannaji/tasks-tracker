@@ -36,4 +36,15 @@ export const reportsAPI = {
     const response = await api.get('/reports/reports/');
     return response.data;
   },
+
+  getEmployeeReports: async (employeeId?: number): Promise<TaskReport[]> => {
+    const params = employeeId ? `?employee_id=${employeeId}` : '';
+    const response = await api.get(`/reports/reports/employee_reports/${params}`);
+    return response.data;
+  },
+
+  getManagerDashboardReports: async (): Promise<TaskReport[]> => {
+    const response = await api.get('/reports/reports/manager_dashboard/');
+    return response.data;
+  },
 };
