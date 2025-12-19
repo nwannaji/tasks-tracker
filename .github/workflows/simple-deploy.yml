@@ -1,0 +1,84 @@
+name: Simple Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Create minimal package.json
+        run: |
+          cd frontend
+          cat > package.json << 'EOF'
+          {
+            "name": "frontend",
+            "private": true,
+            "version": "0.0.0",
+            "type": "module",
+            "scripts": {
+              "dev": "vite",
+              "build": "tsc -b && vite build",
+              "lint": "eslint .",
+              "preview": "vite preview"
+            },
+            "dependencies": {
+              "@heroicons/react": "^2.2.0",
+              "@tailwindcss/vite": "^4.1.17",
+              "axios": "^1.13.2",
+              "lucide-react": "^0.555.0",
+              "react": "^18.3.1",
+              "react-dom": "^18.3.1",
+              "react-router-dom": "^7.9.6",
+              "tailwindcss": "^4.1.17"
+            },
+            "devDependencies": {
+              "@eslint/js": "^9.39.1",
+              "@types/node": "^24.10.1",
+              "@types/react": "^18.3.12",
+              "@types/react-dom": "^18.3.1",
+              "@vitejs/plugin-react": "^5.1.1",
+              "eslint": "^9.39.1",
+              "eslint-plugin-react-hooks": "^7.0.1",
+              "eslint-plugin-react-refresh": "^0.4.24",
+              "globals": "^16.5.0",
+              "typescript": "~5.9.3",
+              "typescript-eslint": "^8.46.4",
+              "vite": "^7.2.4"
+            }
+          }
+          EOF
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm install --ignore-scripts
+
+      - name: Build
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend/dist
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
