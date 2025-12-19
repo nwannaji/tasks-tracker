@@ -6,7 +6,7 @@ interface AuthContextType {
   user: User | null;
   login: (username: string, password: string) => Promise<void>;
   register: (data: { username: string; email: string; password: string; first_name: string; last_name: string; role?: 'GM' | 'employee' }) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   isLoading: boolean;
   isAuthenticated: boolean;
 }
@@ -58,8 +58,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser(response.user);
   };
 
-  const logout = () => {
-    authAPI.logout();
+  const logout = async () => {
+    await authAPI.logout();
     setUser(null);
   };
 

@@ -46,6 +46,22 @@ def login_view(request):
             status=status.HTTP_401_UNAUTHORIZED
         )
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout_view(request):
+    """Logout view to blacklist the refresh token"""
+    try:
+        refresh_token = request.data.get('refresh')
+        if refresh_token:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+        return Response({'message': 'Successfully logged out'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response(
+            {'error': 'Invalid token or already logged out'}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def profile_view(request):

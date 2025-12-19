@@ -90,7 +90,7 @@ const Dashboard: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-sm sm:text-base text-gray-600">Loading dashboard...</p>
+          <p className="text-sm sm:text-base text-gray-600 dark:text-slate-300">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -100,16 +100,16 @@ const Dashboard: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-4">
-          <div className="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
-            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-16 h-16 mx-auto mb-4 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+            <svg className="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Something went wrong</h3>
-          <p className="text-sm text-gray-600 mb-4">{error}</p>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Something went wrong</h3>
+          <p className="text-sm text-gray-600 dark:text-slate-300 mb-4">{error}</p>
           <button
             onClick={retryLoad}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-slate-900"
           >
             Try Again
           </button>
@@ -120,14 +120,14 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="pt-16 sm:pt-16">
-      <div className="py-4 sm:py-6 bg-linear-to-br from-slate-50 to-slate-100 min-h-screen">
+      <div className="py-4 sm:py-6 bg-linear-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 min-h-screen">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 space-y-4 sm:space-y-0">
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">
                 Task Management System
               </h1>
-              <p className="mt-1 text-xs sm:text-sm text-gray-500">
+              <p className="mt-1 text-xs sm:text-sm text-gray-500 dark:text-slate-400">
                 Manage and track your daily tasks efficiently
               </p>
             </div>
@@ -135,14 +135,14 @@ const Dashboard: React.FC = () => {
               {user?.is_manager && (
                 <button
                   onClick={() => setShowTaskForm(true)}
-                  className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-slate-900 transition-colors duration-200"
                 >
                   <PlusIcon className="h-5 w-5 mr-2" />
                   Create Task
                 </button>
               )}
               {!user?.is_manager && (
-                <div className="text-xs sm:text-sm text-gray-500 text-center sm:text-right">
+                <div className="text-xs sm:text-sm text-gray-500 dark:text-slate-400 text-center sm:text-right">
                   You can only report on tasks assigned to you
                 </div>
               )}
@@ -151,14 +151,14 @@ const Dashboard: React.FC = () => {
 
           {/* Tab Navigation - Only for Managers */}
           {user?.is_manager && (
-            <div className="border-b border-gray-200 mb-6">
+            <div className="border-b border-gray-200 dark:border-slate-600 mb-6">
               <nav className="-mb-px flex space-x-8">
                 <button
                   onClick={() => setActiveTab("tasks")}
                   className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                     activeTab === "tasks"
-                      ? "border-indigo-500 text-indigo-600"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      ? "border-indigo-500 text-indigo-600 dark:text-indigo-400"
+                      : "border-transparent text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-300 hover:border-gray-300 dark:hover:border-slate-600"
                   }`}
                 >
                   Tasks Management
@@ -167,8 +167,8 @@ const Dashboard: React.FC = () => {
                   onClick={() => setActiveTab("reports")}
                   className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                     activeTab === "reports"
-                      ? "border-indigo-500 text-indigo-600"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                      ? "border-indigo-500 text-indigo-600 dark:text-indigo-400"
+                      : "border-transparent text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-300 hover:border-gray-300 dark:hover:border-slate-600"
                   }`}
                 >
                   Employee Reports
@@ -179,23 +179,23 @@ const Dashboard: React.FC = () => {
         {/* Stats Cards */}
         {stats && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-            <div className="bg-white overflow-hidden shadow-sm sm:shadow rounded-lg border border-gray-100 hover:shadow-md transition-shadow duration-200">
+            <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-sm sm:shadow rounded-lg border border-gray-100 dark:border-slate-700 hover:shadow-md transition-shadow duration-200">
               <div className="p-4 sm:p-5">
                 <div className="flex items-center">
                   <div className="shrink-0">
-                    <div className="p-2 bg-gray-50 rounded-lg">
+                    <div className="p-2 bg-gray-50 dark:bg-slate-700 rounded-lg">
                       <UserGroupIcon
-                        className="h-5 w-5 sm:h-6 sm:w-6 text-gray-600"
+                        className="h-5 w-5 sm:h-6 sm:w-6 text-gray-600 dark:text-slate-300"
                         aria-hidden="true"
                       />
                     </div>
                   </div>
                   <div className="ml-3 sm:ml-5 w-0 flex-1">
                     <dl>
-                      <dt className="text-xs sm:text-sm font-medium text-gray-500 truncate">
+                      <dt className="text-xs sm:text-sm font-medium text-gray-500 dark:text-slate-400 truncate">
                         Total Tasks
                       </dt>
-                      <dd className="text-xl sm:text-lg font-bold text-gray-900">
+                      <dd className="text-xl sm:text-lg font-bold text-gray-900 dark:text-white">
                         {stats.total}
                       </dd>
                     </dl>
@@ -204,23 +204,23 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white overflow-hidden shadow-sm sm:shadow rounded-lg border border-gray-100 hover:shadow-md transition-shadow duration-200">
+            <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-sm sm:shadow rounded-lg border border-gray-100 dark:border-slate-700 hover:shadow-md transition-shadow duration-200">
               <div className="p-4 sm:p-5">
                 <div className="flex items-center">
                   <div className="shrink-0">
-                    <div className="p-2 bg-blue-50 rounded-lg">
+                    <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                       <ClockIcon
-                        className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600"
+                        className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600 dark:text-blue-400"
                         aria-hidden="true"
                       />
                     </div>
                   </div>
                   <div className="ml-3 sm:ml-5 w-0 flex-1">
                     <dl>
-                      <dt className="text-xs sm:text-sm font-medium text-gray-500 truncate">
+                      <dt className="text-xs sm:text-sm font-medium text-gray-500 dark:text-slate-400 truncate">
                         Assigned
                       </dt>
-                      <dd className="text-xl sm:text-lg font-bold text-gray-900">
+                      <dd className="text-xl sm:text-lg font-bold text-gray-900 dark:text-white">
                         {stats.assigned}
                       </dd>
                     </dl>
@@ -229,20 +229,20 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white overflow-hidden shadow-sm sm:shadow rounded-lg border border-gray-100 hover:shadow-md transition-shadow duration-200">
+            <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-sm sm:shadow rounded-lg border border-gray-100 dark:border-slate-700 hover:shadow-md transition-shadow duration-200">
               <div className="p-4 sm:p-5">
                 <div className="flex items-center">
                   <div className="shrink-0">
-                    <div className="p-2 bg-yellow-50 rounded-lg">
-                      <div className="h-5 w-5 sm:h-6 sm:w-6 bg-yellow-400 rounded-full animate-pulse"></div>
+                    <div className="p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                      <div className="h-5 w-5 sm:h-6 sm:w-6 bg-yellow-400 dark:bg-yellow-500 rounded-full animate-pulse"></div>
                     </div>
                   </div>
                   <div className="ml-3 sm:ml-5 w-0 flex-1">
                     <dl>
-                      <dt className="text-xs sm:text-sm font-medium text-gray-500 truncate">
+                      <dt className="text-xs sm:text-sm font-medium text-gray-500 dark:text-slate-400 truncate">
                         On-going
                       </dt>
-                      <dd className="text-xl sm:text-lg font-bold text-gray-900">
+                      <dd className="text-xl sm:text-lg font-bold text-gray-900 dark:text-white">
                         {stats.ongoing}
                       </dd>
                     </dl>
@@ -251,23 +251,23 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-white overflow-hidden shadow-sm sm:shadow rounded-lg border border-gray-100 hover:shadow-md transition-shadow duration-200">
+            <div className="bg-white dark:bg-slate-800 overflow-hidden shadow-sm sm:shadow rounded-lg border border-gray-100 dark:border-slate-700 hover:shadow-md transition-shadow duration-200">
               <div className="p-4 sm:p-5">
                 <div className="flex items-center">
                   <div className="shrink-0">
-                    <div className="p-2 bg-green-50 rounded-lg">
+                    <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
                       <CheckCircleIcon
-                        className="h-5 w-5 sm:h-6 sm:w-6 text-green-600"
+                        className="h-5 w-5 sm:h-6 sm:w-6 text-green-600 dark:text-green-400"
                         aria-hidden="true"
                       />
                     </div>
                   </div>
                   <div className="ml-3 sm:ml-5 w-0 flex-1">
                     <dl>
-                      <dt className="text-xs sm:text-sm font-medium text-gray-500 truncate">
+                      <dt className="text-xs sm:text-sm font-medium text-gray-500 dark:text-slate-400 truncate">
                         Completed
                       </dt>
-                      <dd className="text-xl sm:text-lg font-bold text-gray-900">
+                      <dd className="text-xl sm:text-lg font-bold text-gray-900 dark:text-white">
                         {stats.completed}
                       </dd>
                     </dl>
@@ -290,15 +290,15 @@ const Dashboard: React.FC = () => {
                   className={`px-3 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
                     selectedStatus === option.value
                       ? "bg-indigo-600 text-white shadow-sm"
-                      : "bg-white text-gray-700 hover:bg-gray-50 border border-gray-300"
+                      : "bg-white dark:bg-slate-700 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-600 border border-gray-300 dark:border-slate-600"
                   }`}
                 >
                   {option.label}
                 </button>
               ))}
               {isRefreshing && (
-                <div className="flex items-center px-3 py-2 text-xs text-gray-500">
-                  <div className="animate-spin rounded-full h-3 w-3 border-b border-gray-400 mr-2"></div>
+                <div className="flex items-center px-3 py-2 text-xs text-gray-500 dark:text-slate-400">
+                  <div className="animate-spin rounded-full h-3 w-3 border-b border-gray-400 dark:border-slate-400 mr-2"></div>
                   Refreshing...
                 </div>
               )}
