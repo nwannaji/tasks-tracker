@@ -181,3 +181,15 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='Tasks Tracker <norepl
 
 # Frontend URL for password reset links
 FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:5173')
+
+# CORS settings
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+    "http://127.0.0.1:62072",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = DEBUG  # Allow all origins in development mode

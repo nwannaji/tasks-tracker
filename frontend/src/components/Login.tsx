@@ -87,10 +87,7 @@ const Login: React.FC = () => {
                 <button
                   type="button"
                   className="absolute inset-y-0 right-0 pr-3 flex items-center z-20 bg-transparent border-0 outline-none"
-                  onClick={() => {
-                    console.log('Toggle password visibility, current state:', showPassword);
-                    setShowPassword(!showPassword);
-                  }}
+                  onClick={() => setShowPassword(!showPassword)}
                   style={{ pointerEvents: 'auto' }}
                 >
                   {showPassword ? (
@@ -102,13 +99,6 @@ const Login: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {/* Debug indicator - remove later */}
-          {import.meta.env.DEV && (
-            <div className="text-xs text-gray-500 dark:text-slate-400 text-center">
-              Password visibility: {showPassword ? 'VISIBLE' : 'HIDDEN'}
-            </div>
-          )}
 
           <div>
             <button

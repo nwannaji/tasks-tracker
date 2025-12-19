@@ -36,7 +36,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   useEffect(() => {
     // Apply theme to document using Tailwind CSS recommended approach
     const root = document.documentElement;
-    console.log('Applying theme:', theme);
     
     // Remove both classes first to ensure clean state
     root.classList.remove('dark');
@@ -45,8 +44,6 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     if (theme === 'dark') {
       root.classList.add('dark');
     }
-    
-    console.log('Document classes after theme change:', root.className);
   }, [theme]);
 
   // Listen for system theme changes
@@ -64,10 +61,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   }, []);
 
   const toggleTheme = () => {
-    console.log('Toggle called, current theme:', theme);
     setTheme(prev => {
       const newTheme = prev === 'light' ? 'dark' : 'light';
-      console.log('Setting new theme:', newTheme);
       
       // Update localStorage using Tailwind CSS recommended approach
       if (newTheme === 'dark') {

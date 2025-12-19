@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: tasks-tracker-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn tasks_tracker.wsgi:application
+    envVars:
+      - key: DEBUG
+        value: False
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DB_NAME
+        value: tasks_tracker_db
+      - key: DB_USER
+        value: postgres
+      - key: DB_HOST
+        value: localhost
+      - key: DB_PORT
+        value: 5432
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
+
+databases:
+  - name: tasks-tracker-db
+    databaseName: tasks_tracker_db
+    user: postgres
+    plan: free

@@ -5,7 +5,6 @@ const ThemeToggle: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
 
   const handleClick = () => {
-    console.log('Theme toggle clicked, current theme:', theme);
     toggleTheme();
   };
 
